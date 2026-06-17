@@ -6,8 +6,16 @@ import QrCode from "@/app/components/QrCode";
 import PhotoUpload from "@/app/components/PhotoUpload";
 import BrandHeader from "@/app/components/BrandHeader";
 import TrailerMotif from "@/app/components/TrailerMotif";
-import { ensurePin, clearStoredPin } from "@/app/components/pinClient";
 import type { InventoryItem } from "@/lib/supabase";
+
+// Parse a response as JSON without throwing on an empty/non-JSON body.
+async function safeJson(res: Response): Promise<any> {
+  try {
+    return await res.json();
+  } catch {
+    return {};
+  }
+}
 
 type FormState = {
   name: string;
@@ -62,7 +70,7 @@ export default function AdminItemsPage() {
     setLoading(true);
     try {
       const res = await fetch("/api/items");
-      const data = await res.json();
+      const data = await safeJson(res);
       if (!res.ok) throw new Error(data.error || "Failed to load");
       setItems(data.items as InventoryItem[]);
       setError(null);
@@ -77,19 +85,15 @@ export default function AdminItemsPage() {
     load();
   }, [load]);
 
-  // Shared request helper that attaches the PIN and handles 401s.
+  // Shared request helper.
   async function send(url: string, method: string, body: object) {
-    const pin = ensurePin();
-    if (!pin) return null;
-
     const res = await fetch(url, {
       method,
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ...body, pin }),
+      body: JSON.stringify(body),
     });
-    const data = await res.json();
+    const data = await safeJson(res);
     if (!res.ok) {
-      if (res.status === 401) clearStoredPin();
       throw new Error(data.error || "Request failed");
     }
     return data;

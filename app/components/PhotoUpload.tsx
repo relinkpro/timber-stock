@@ -1,11 +1,10 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { ensurePin, clearStoredPin } from "@/app/components/pinClient";
 import type { InventoryItem } from "@/lib/supabase";
 
 // A single button that opens the phone camera or photo library, uploads the
-// chosen image, and reports the updated item back. Requires the admin PIN.
+// chosen image, and reports the updated item back.
 export default function PhotoUpload({
   itemId,
   hasImage,
@@ -26,14 +25,10 @@ export default function PhotoUpload({
     e.target.value = ""; // allow re-picking the same file later
     if (!file) return;
 
-    const pin = ensurePin();
-    if (!pin) return;
-
     setBusy(true);
     setError(null);
     try {
       const fd = new FormData();
-      fd.append("pin", pin);
       fd.append("file", file);
 
       const res = await fetch(`/api/items/${itemId}/image`, {
@@ -49,7 +44,6 @@ export default function PhotoUpload({
       }
 
       if (!res.ok) {
-        if (res.status === 401) clearStoredPin();
         throw new Error(data.error || "Upload failed.");
       }
       onUploaded?.(data.item as InventoryItem);

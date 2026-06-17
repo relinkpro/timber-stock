@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { ensurePin, clearStoredPin } from "@/app/components/pinClient";
 
 export default function ItemActions({
   slug,
@@ -18,20 +17,21 @@ export default function ItemActions({
     if (busy) return;
     setError(null);
 
-    const pin = ensurePin();
-    if (!pin) return;
-
     setBusy(true);
     try {
       const res = await fetch("/api/move", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ pin, slug, change }),
+        body: JSON.stringify({ slug, change }),
       });
-      const data = await res.json();
+      let data: any = {};
+      try {
+        data = await res.json();
+      } catch {
+        /* empty/non-JSON body — handled below */
+      }
 
       if (!res.ok) {
-        if (res.status === 401) clearStoredPin(); // wrong PIN — ask again next time
         if (typeof data.quantity === "number") setQuantity(data.quantity);
         setError(data.error || "Something went wrong.");
         return;
