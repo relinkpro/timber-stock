@@ -34,6 +34,7 @@ export default async function ItemPage({
           {item.description ? (
             <div className="card-desc">{item.description}</div>
           ) : null}
+          {item.price ? <div className="card-price">{item.price}</div> : null}
           <div className="loc-block">
             <span className="loc-icon">📍</span>
             <div>

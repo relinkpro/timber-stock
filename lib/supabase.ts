@@ -32,6 +32,7 @@ export type InventoryItem = {
   slug: string;
   location: string | null;
   image_url: string | null;
+  price: string | null;
   archived: boolean;
   created_at: string;
   updated_at: string;

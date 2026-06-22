@@ -6,6 +6,7 @@ import QrCode from "@/app/components/QrCode";
 import PhotoUpload from "@/app/components/PhotoUpload";
 import BrandHeader from "@/app/components/BrandHeader";
 import TrailerMotif from "@/app/components/TrailerMotif";
+import { byNaturalOrder } from "@/lib/naturalSort";
 import type { InventoryItem } from "@/lib/supabase";
 
 // Parse a response as JSON without throwing on an empty/non-JSON body.
@@ -21,6 +22,7 @@ type FormState = {
   name: string;
   description: string;
   location: string;
+  price: string;
   quantity: string;
 };
 
@@ -28,6 +30,7 @@ const emptyForm: FormState = {
   name: "",
   description: "",
   location: "",
+  price: "",
   quantity: "0",
 };
 
@@ -56,15 +59,18 @@ export default function AdminItemsPage() {
   // Keyword filter: every typed word must appear somewhere in the product's
   // name, description or location (case-insensitive).
   const terms = query.trim().toLowerCase().split(/\s+/).filter(Boolean);
-  const filtered = items.filter((item) => {
-    if (!showArchived && item.archived) return false;
-    if (terms.length === 0) return true;
-    const haystack = [item.name, item.description, item.location]
-      .filter(Boolean)
-      .join(" ")
-      .toLowerCase();
-    return terms.every((t) => haystack.includes(t));
-  });
+  const filtered = items
+    .filter((item) => {
+      if (!showArchived && item.archived) return false;
+      if (terms.length === 0) return true;
+      const haystack = [item.name, item.description, item.location]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase();
+      return terms.every((t) => haystack.includes(t));
+    })
+    // Natural alphanumeric order (a1, a2, a10, b2 …) so it's easy to scan.
+    .sort(byNaturalOrder);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -111,6 +117,7 @@ export default function AdminItemsPage() {
         name: addForm.name,
         description: addForm.description,
         location: addForm.location,
+        price: addForm.price,
         quantity: Number(addForm.quantity) || 0,
       });
       setAddForm(emptyForm);
@@ -129,6 +136,7 @@ export default function AdminItemsPage() {
       name: item.name,
       description: item.description ?? "",
       location: item.location ?? "",
+      price: item.price ?? "",
       quantity: String(item.quantity),
     });
   }
@@ -141,6 +149,7 @@ export default function AdminItemsPage() {
         name: editForm.name,
         description: editForm.description,
         location: editForm.location,
+        price: editForm.price,
         quantity: Number(editForm.quantity) || 0,
       });
       setEditingId(null);
@@ -258,6 +267,12 @@ export default function AdminItemsPage() {
               }
               placeholder="e.g. Rack B3 / Yard 2"
             />
+            <label>Price</label>
+            <input
+              value={addForm.price}
+              onChange={(e) => setAddForm({ ...addForm, price: e.target.value })}
+              placeholder="e.g. £24.50"
+            />
             <label>Starting quantity</label>
             <input
               type="number"
@@ -331,6 +346,14 @@ export default function AdminItemsPage() {
                         setEditForm({ ...editForm, location: e.target.value })
                       }
                     />
+                    <label>Price</label>
+                    <input
+                      value={editForm.price}
+                      onChange={(e) =>
+                        setEditForm({ ...editForm, price: e.target.value })
+                      }
+                      placeholder="e.g. £24.50"
+                    />
                     <label>Quantity</label>
                     <input
                       type="number"
@@ -383,6 +406,9 @@ export default function AdminItemsPage() {
                       </div>
                       {item.description ? (
                         <div className="card-desc">{item.description}</div>
+                      ) : null}
+                      {item.price ? (
+                        <div className="card-price">{item.price}</div>
                       ) : null}
                     </div>
                     <div className="qty-badge">

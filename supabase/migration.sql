@@ -17,6 +17,7 @@ create table if not exists public.inventory_items (
   slug        text unique not null,
   location    text,
   image_url   text,
+  price       text,
   archived    boolean not null default false,
   created_at  timestamptz not null default now(),
   updated_at  timestamptz not null default now()

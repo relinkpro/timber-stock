@@ -37,6 +37,9 @@ export async function PATCH(
     if (body.location !== undefined) {
       update.location = String(body.location).trim() || null;
     }
+    if (body.price !== undefined) {
+      update.price = String(body.price).trim() || null;
+    }
     if (body.quantity !== undefined) {
       update.quantity = Math.max(0, Math.floor(Number(body.quantity) || 0));
     }
