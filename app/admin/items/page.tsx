@@ -182,6 +182,12 @@ export default function AdminItemsPage() {
 
         {error ? <p className="error">{error}</p> : null}
 
+        <div style={{ marginBottom: 12 }}>
+          <Link className="btn btn-dark" href="/jobs">
+            🔧 Jobs
+          </Link>
+        </div>
+
         <Link className="btn btn-print-all" href="/admin/qr-print">
           <span style={{ fontSize: 16 }}>⎙</span> Print all QR codes
         </Link>

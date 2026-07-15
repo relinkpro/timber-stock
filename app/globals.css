@@ -591,6 +591,112 @@ input[type="search"] {
   height: 100%;
 }
 
+/* ---------------- Jobs section ---------------- */
+.search-results {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.search-result {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  text-align: left;
+  font-family: inherit;
+  font-size: 14px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: #fff;
+  cursor: pointer;
+}
+.search-result:active {
+  background: #f6f7f9;
+}
+
+.job-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.job-line {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: 10px;
+}
+.job-line .line-total {
+  font-weight: 800;
+  min-width: 72px;
+  text-align: right;
+}
+
+.qty-stepper {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--line-strong);
+  border-radius: 9px;
+  overflow: hidden;
+}
+.qty-stepper button {
+  width: 40px;
+  height: 40px;
+  font-size: 22px;
+  font-weight: 700;
+  border: none;
+  background: #fff;
+  color: var(--fg);
+  cursor: pointer;
+}
+.qty-stepper button:active {
+  background: #f6f7f9;
+}
+.qty-stepper span {
+  min-width: 34px;
+  text-align: center;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.totals-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 6px 0;
+  font-size: 15px;
+}
+.totals-line.grand {
+  border-top: 2px solid var(--fg);
+  margin-top: 6px;
+  padding-top: 10px;
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.sheet-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 12px;
+  color: #000;
+}
+.sheet-title {
+  font-size: 22px;
+  font-weight: 800;
+}
+.print-table tfoot .foot-label {
+  text-align: right;
+  font-weight: 700;
+}
+.print-table tfoot .grand {
+  font-size: 18px;
+  font-weight: 800;
+}
+
 @media print {
   html,
   body {
