@@ -15,7 +15,10 @@ export default async function DashboardPage() {
   const now = new Date();
   const since = new Date(now.getTime() - 180 * DAY).toISOString();
 
-  const [{ data: itemsData }, { data: movesData }] = await Promise.all([
+  const [
+    { data: itemsData, error: itemsErr },
+    { data: movesData, error: movesErr },
+  ] = await Promise.all([
     supabase.from("inventory_items").select("*").eq("archived", false),
     supabase
       .from("stock_movements")
@@ -23,6 +26,7 @@ export default async function DashboardPage() {
       .gte("created_at", since),
   ]);
 
+  const loadError = itemsErr?.message || movesErr?.message || null;
   const items = (itemsData ?? []) as InventoryItem[];
   const moves = (movesData ?? []) as Movement[];
   const itemName = new Map(items.map((i) => [i.id, i.name]));
@@ -109,6 +113,10 @@ export default async function DashboardPage() {
           <Link href="/admin/items">← Products</Link> ·{" "}
           <Link href="/jobs">Jobs</Link>
         </p>
+
+        {loadError ? (
+          <p className="error">Couldn’t load data: {loadError}</p>
+        ) : null}
 
         {/* KPI tiles */}
         <div className="kpi-row">
