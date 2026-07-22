@@ -40,6 +40,12 @@ export async function PATCH(
     if (body.price !== undefined) {
       update.price = String(body.price).trim() || null;
     }
+    if (body.min_level !== undefined) {
+      update.min_level = Math.max(0, Math.floor(Number(body.min_level) || 0));
+    }
+    if (body.max_level !== undefined) {
+      update.max_level = Math.max(0, Math.floor(Number(body.max_level) || 0));
+    }
     if (body.quantity !== undefined) {
       update.quantity = Math.max(0, Math.floor(Number(body.quantity) || 0));
     }

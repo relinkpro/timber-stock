@@ -7,6 +7,7 @@ import PhotoUpload from "@/app/components/PhotoUpload";
 import BrandHeader from "@/app/components/BrandHeader";
 import TrailerMotif from "@/app/components/TrailerMotif";
 import { byNaturalOrder } from "@/lib/naturalSort";
+import { statusOf, STATUS_META } from "@/lib/stockStatus";
 import type { InventoryItem } from "@/lib/supabase";
 
 // Parse a response as JSON without throwing on an empty/non-JSON body.
@@ -24,6 +25,8 @@ type FormState = {
   location: string;
   price: string;
   quantity: string;
+  min_level: string;
+  max_level: string;
 };
 
 const emptyForm: FormState = {
@@ -32,6 +35,8 @@ const emptyForm: FormState = {
   location: "",
   price: "",
   quantity: "0",
+  min_level: "0",
+  max_level: "0",
 };
 
 // Quantity badge colour: red (low) / amber (mid) / green (healthy).
@@ -119,6 +124,8 @@ export default function AdminItemsPage() {
         location: addForm.location,
         price: addForm.price,
         quantity: Number(addForm.quantity) || 0,
+        min_level: Number(addForm.min_level) || 0,
+        max_level: Number(addForm.max_level) || 0,
       });
       setAddForm(emptyForm);
       setShowAdd(false);
@@ -138,6 +145,8 @@ export default function AdminItemsPage() {
       location: item.location ?? "",
       price: item.price ?? "",
       quantity: String(item.quantity),
+      min_level: String(item.min_level ?? 0),
+      max_level: String(item.max_level ?? 0),
     });
   }
 
@@ -151,6 +160,8 @@ export default function AdminItemsPage() {
         location: editForm.location,
         price: editForm.price,
         quantity: Number(editForm.quantity) || 0,
+        min_level: Number(editForm.min_level) || 0,
+        max_level: Number(editForm.max_level) || 0,
       });
       setEditingId(null);
       await load();
@@ -182,7 +193,10 @@ export default function AdminItemsPage() {
 
         {error ? <p className="error">{error}</p> : null}
 
-        <div style={{ marginBottom: 12 }}>
+        <div className="row" style={{ marginBottom: 12 }}>
+          <Link className="btn btn-dark" href="/dashboard">
+            📊 Dashboard
+          </Link>
           <Link className="btn btn-dark" href="/jobs">
             🔧 Jobs
           </Link>
@@ -277,8 +291,34 @@ export default function AdminItemsPage() {
             <input
               value={addForm.price}
               onChange={(e) => setAddForm({ ...addForm, price: e.target.value })}
-              placeholder="e.g. £24.50"
+              placeholder="e.g. €24.50"
             />
+            <div className="row">
+              <div>
+                <label>Min level (reorder at)</label>
+                <input
+                  type="number"
+                  inputMode="numeric"
+                  min={0}
+                  value={addForm.min_level}
+                  onChange={(e) =>
+                    setAddForm({ ...addForm, min_level: e.target.value })
+                  }
+                />
+              </div>
+              <div>
+                <label>Max level (full)</label>
+                <input
+                  type="number"
+                  inputMode="numeric"
+                  min={0}
+                  value={addForm.max_level}
+                  onChange={(e) =>
+                    setAddForm({ ...addForm, max_level: e.target.value })
+                  }
+                />
+              </div>
+            </div>
             <label>Starting quantity</label>
             <input
               type="number"
@@ -358,8 +398,40 @@ export default function AdminItemsPage() {
                       onChange={(e) =>
                         setEditForm({ ...editForm, price: e.target.value })
                       }
-                      placeholder="e.g. £24.50"
+                      placeholder="e.g. €24.50"
                     />
+                    <div className="row">
+                      <div>
+                        <label>Min level</label>
+                        <input
+                          type="number"
+                          inputMode="numeric"
+                          min={0}
+                          value={editForm.min_level}
+                          onChange={(e) =>
+                            setEditForm({
+                              ...editForm,
+                              min_level: e.target.value,
+                            })
+                          }
+                        />
+                      </div>
+                      <div>
+                        <label>Max level</label>
+                        <input
+                          type="number"
+                          inputMode="numeric"
+                          min={0}
+                          value={editForm.max_level}
+                          onChange={(e) =>
+                            setEditForm({
+                              ...editForm,
+                              max_level: e.target.value,
+                            })
+                          }
+                        />
+                      </div>
+                    </div>
                     <label>Quantity</label>
                     <input
                       type="number"
@@ -432,6 +504,28 @@ export default function AdminItemsPage() {
                       {item.location || "No location — tap Edit to add"}
                     </span>
                   </div>
+
+                  {/* traffic light from min/max */}
+                  {(() => {
+                    const s = statusOf(item);
+                    const meta = STATUS_META[s];
+                    return (
+                      <div className="status-pill" style={{ background: meta.bg }}>
+                        <span
+                          className="status-dot"
+                          style={{ background: meta.color }}
+                        />
+                        <span style={{ color: meta.color, fontWeight: 700 }}>
+                          {meta.label}
+                        </span>
+                        {s !== "none" ? (
+                          <span className="muted" style={{ fontSize: 12 }}>
+                            min {item.min_level} · max {item.max_level}
+                          </span>
+                        ) : null}
+                      </div>
+                    );
+                  })()}
 
                   {/* media: photo + qr */}
                   <div className="media-row">

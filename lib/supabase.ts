@@ -33,6 +33,8 @@ export type InventoryItem = {
   location: string | null;
   image_url: string | null;
   price: string | null;
+  min_level: number;
+  max_level: number;
   archived: boolean;
   created_at: string;
   updated_at: string;

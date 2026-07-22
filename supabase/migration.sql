@@ -18,6 +18,8 @@ create table if not exists public.inventory_items (
   location    text,
   image_url   text,
   price       text,
+  min_level   integer not null default 0,
+  max_level   integer not null default 0,
   archived    boolean not null default false,
   created_at  timestamptz not null default now(),
   updated_at  timestamptz not null default now()

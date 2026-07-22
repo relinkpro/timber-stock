@@ -49,6 +49,8 @@ export async function POST(req: Request) {
     const location = String(body?.location ?? "").trim() || null;
     const price = String(body?.price ?? "").trim() || null;
     const quantity = Math.max(0, Math.floor(Number(body?.quantity) || 0));
+    const min_level = Math.max(0, Math.floor(Number(body?.min_level) || 0));
+    const max_level = Math.max(0, Math.floor(Number(body?.max_level) || 0));
 
     const supabase = getServiceClient();
 
@@ -57,7 +59,17 @@ export async function POST(req: Request) {
     for (let attempt = 0; attempt < 5; attempt++) {
       const { data, error } = await supabase
         .from("inventory_items")
-        .insert({ name, description, size, location, price, quantity, slug })
+        .insert({
+          name,
+          description,
+          size,
+          location,
+          price,
+          quantity,
+          min_level,
+          max_level,
+          slug,
+        })
         .select("*")
         .single();
 

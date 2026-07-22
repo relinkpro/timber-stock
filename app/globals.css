@@ -591,6 +591,142 @@ input[type="search"] {
   height: 100%;
 }
 
+/* ---------------- Traffic light + dashboard ---------------- */
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: 13px;
+}
+.status-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex: none;
+  display: inline-block;
+}
+
+.kpi-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.kpi {
+  border-radius: 12px;
+  padding: 12px 8px;
+  text-align: center;
+}
+.kpi-num {
+  font-size: 30px;
+  font-weight: 800;
+  line-height: 1;
+}
+.kpi-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-top: 4px;
+}
+@media (max-width: 420px) {
+  .kpi-num {
+    font-size: 24px;
+  }
+  .kpi-label {
+    font-size: 10px;
+  }
+}
+
+.reorder-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.reorder-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* horizontal bars */
+.hbars {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.hbar-row {
+  display: grid;
+  grid-template-columns: 40% 1fr auto;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+}
+.hbar-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.hbar-track {
+  background: #eef0f3;
+  border-radius: 6px;
+  height: 16px;
+  overflow: hidden;
+}
+.hbar-fill {
+  height: 100%;
+  border-radius: 6px;
+  min-width: 2px;
+}
+.hbar-val {
+  font-weight: 700;
+  min-width: 28px;
+  text-align: right;
+}
+
+/* vertical column chart */
+.col-chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  height: 140px;
+}
+.col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 0;
+}
+.col-bar-wrap {
+  width: 100%;
+  height: 110px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+}
+.col-val {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--muted);
+  margin-bottom: 2px;
+}
+.col-bar {
+  width: 66%;
+  min-height: 2px;
+  border-radius: 4px 4px 0 0;
+}
+.col-label {
+  font-size: 10px;
+  color: var(--muted);
+  margin-top: 4px;
+  white-space: nowrap;
+}
+
 /* ---------------- Jobs section ---------------- */
 .search-results {
   margin-top: 10px;
